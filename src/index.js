@@ -12,11 +12,15 @@ function combineImages() {
 }
 //'img1.png','img2.png','img3.png','img4.png'
 var data = [
-        "https://images.unsplash.com/photo-1563714272638-882a6309ba7d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-        "https://i.imgur.com/YwTuZEr.png",
-        "https://i.imgur.com/2Hci8GS.png",
-        "https://i.imgur.com/EkZpkXY.png",
-        "https://i.imgur.com/11G97T3.png"
+        // "https://images.unsplash.com/photo-1563714272638-882a6309ba7d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
+        // "https://i.imgur.com/YwTuZEr.png",
+        // "https://i.imgur.com/2Hci8GS.png",
+        // "https://i.imgur.com/EkZpkXY.png",
+        // "https://i.imgur.com/11G97T3.png"
+        "./img/1-1.png",
+        "./img/1-2.png",
+        "./img/1-3.png",
+        "./img/1-4.png"
     ],
     base64 = [];
 function draw(fn) {
