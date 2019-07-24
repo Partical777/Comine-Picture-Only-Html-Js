@@ -5,3 +5,29 @@ body {
 img {
     border: solid 1px #ddd;
 }
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+
+#container {
+    text-align: center;
+}
+
+.konvajs-content {
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 5px solid red;
+    margin: 0 auto;
+}
+
+p {
+    margin: 4px;
+}
+
+#drag-items img {
+    height: 100px;
+    width: 100px;
+}

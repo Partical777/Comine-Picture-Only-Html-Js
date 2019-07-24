@@ -1,29 +1,45 @@
 import "./styles.css";
 
-document.getElementById("combineMe").addEventListener("click", combineImages);
+let x = 0;
 
-function combineImages() {
-    draw(function() {
-        document.getElementById("imgBox").innerHTML =
+document.getElementById("combineMe1").addEventListener("click", combineImages1);
+document.getElementById("combineMe2").addEventListener("click", combineImages2);
+
+function combineImages1() {
+    draw(data1, function() {
+        document.getElementById("imgBox1").innerHTML =
             '<p style="padding:10px 0">success！</p><img src="' +
-            base64[0] +
+            base64[x] +
             '">';
+        x++;
     });
 }
-//'img1.png','img2.png','img3.png','img4.png'
-var data = [
-        // "https://images.unsplash.com/photo-1563714272638-882a6309ba7d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-        // "https://i.imgur.com/YwTuZEr.png",
-        // "https://i.imgur.com/2Hci8GS.png",
-        // "https://i.imgur.com/EkZpkXY.png",
-        // "https://i.imgur.com/11G97T3.png"
-        "./img/1-1.png",
-        "./img/1-2.png",
-        "./img/1-3.png",
-        "./img/1-4.png"
+function combineImages2() {
+    draw(data2, function() {
+        document.getElementById("imgBox2").innerHTML =
+            '<p style="padding:10px 0">success！</p><img src="' +
+            base64[x] +
+            '">';
+        x++;
+    });
+}
+
+var data1 = [
+        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-1.png",
+        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-2.png",
+        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-3.png",
+        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-4.png"
+    ],
+    data2 = [
+        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/2-1.png",
+        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/2-2.png",
+        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/2-3.png",
+        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/2-4.png",
+        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/2-5.png",
+        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/2-6.png"
     ],
     base64 = [];
-function draw(fn) {
+function draw(data, fn) {
     var c = document.createElement("canvas"),
         ctx = c.getContext("2d"),
         len = data.length;
