@@ -34,6 +34,15 @@
         <script>
             let width = 750;
             let height = 750;
+            let imagewh = 210; //half 420
+            let trStyle = {
+                //transform Style
+                anchorStroke: "#fc766a",
+                anchorSize: 25,
+                borderStroke: "#fc766a",
+                borderStrokeWidth: 5,
+                anchorCornerRadius: 50
+            };
 
             let stage = new Konva.Stage({
                 container: "container",
@@ -51,9 +60,6 @@
             layer.add(Background);
 
             let ImageGroup = new Konva.Group();
-            // //Tooltip
-            // var shapesLayer = new Konva.Layer();
-            // var tooltipLayer = new Konva.Layer();
 
             //     Drag & Drop Image
             // what is url of dragging element?
@@ -79,55 +85,27 @@
 
                 Konva.Image.fromURL(itemURL, function(image) {
                     ImageGroup.add(image);
-                    stage.getPointerPosition().x -= 200;
-                    stage.getPointerPosition().y -= 200;
+                    stage.getPointerPosition().x -= imagewh;
+                    stage.getPointerPosition().y -= imagewh;
 
                     image.position(stage.getPointerPosition());
                     image.draggable(true);
 
                     layer.add(ImageGroup);
+
+                    let tr = new Konva.Transformer(trStyle);
+                    ImageGroup.add(tr);
+                    detachAll();
+                    tr.attachTo(
+                        ImageGroup.children[ImageGroup.children.length - 2]
+                    );
+
                     layer.draw();
                 });
             });
             //=====Drag & Drop Image
 
-            // //     Tooltip
-            // layer.addEventListener("mousemove", function(e) {
-            //     e.preventDefault();
-            //     stage.setPointersPositions(e);
-            //     var mousePos = stage.getPointerPosition();
-            //     tooltip.position({
-            //         x: mousePos.x - 60,
-            //         y: mousePos.y - 50
-            //     });
-            //     tooltip.text("Hello World!");
-            //     tooltip.show();
-            //     tooltipLayer.batchDraw();
-            // });
-
-            // layer.addEventListener("mouseout", function(e) {
-            //     tooltip.hide();
-            //     tooltipLayer.draw();
-            // });
-
-            // var tooltip = new Konva.Text({
-            //     text: "",
-            //     fontFamily: "Calibri",
-            //     fontSize: 24,
-            //     padding: 5,
-            //     textFill: "white",
-            //     fill: "black",
-            //     alpha: 0.75,
-            //     visible: false
-            // });
-
-            // tooltipLayer.add(tooltip);
-            // //=====Tooltip
-
             //Event
-            let tmp;
-            let CirclesGroup = new Konva.Group();
-
             ImageGroup.on("mouseover", function(evt) {
                 let shape = evt.target;
                 document.body.style.cursor = "move";
@@ -136,85 +114,45 @@
             });
             ImageGroup.on("mouseout", function(evt) {
                 let shape = evt.target;
-                if (shape !== tmp) {
-                    document.body.style.cursor = "default";
-                    shape.stroke("");
-                    layer.draw();
-                }
+                document.body.style.cursor = "default";
+                shape.stroke("");
+                layer.draw();
             });
             ImageGroup.on("click", function(evt) {
                 let shape = evt.target;
-                //if click others shape
-                if (tmp !== undefined && shape !== tmp) {
-                    tmp.stroke("");
-                    tmp.strokeWidth(2);
-                    CirclesGroup.destroy();
-                }
-                tmp = shape;
-                document.body.style.cursor = "default";
-                shape.stroke("#fc766a");
-                shape.strokeWidth(7.5);
-                AddCircles(shape.attrs.x, shape.attrs.y);
+
+                detachAll();
+                attachNew(shape.index);
                 layer.draw();
             });
             ImageGroup.on("dragmove", function(evt) {
-                //Like CircleGroup Move
                 let shape = evt.target;
-                if (tmp !== undefined && shape !== tmp) {
-                    tmp.stroke("");
-                    tmp.strokeWidth(2);
-                }
-                document.body.style.cursor = "default";
-                shape.stroke("#fc766a");
-                shape.strokeWidth(7.5);
-                CirclesGroup.destroy();
-                AddCircles(shape.attrs.x, shape.attrs.y);
-                tmp = shape;
+
+                detachAll();
+                attachNew(shape.index);
                 layer.draw();
             });
             Background.on("click", function(evt) {
                 //click background to get blur
                 let shape = evt.target;
-                if (tmp !== undefined) {
-                    tmp.stroke("");
-                    tmp.strokeWidth(2);
-                    CirclesGroup.destroy();
-                }
-                tmp = undefined;
+                detachAll();
                 layer.draw();
             });
             //=====Event
 
-            function AddCircles(x, y) {
-                let arr = [
-                    [0, 0],
-                    [1, 0],
-                    [2, 0],
-                    [0, 1],
-                    [2, 1],
-                    [0, 2],
-                    [1, 2],
-                    [2, 2]
-                ];
-                arr.forEach(function(el) {
-                    let circle = new Konva.Circle({
-                        x: x + 210 * el[0],
-                        y: y + 210 * el[1],
-                        radius: 12,
-                        fill: "red",
-                        stroke: "black",
-                        strokeWidth: 4
-                    });
-                    // add the circle to the group
-                    CirclesGroup.add(circle);
+            function detachAll() {
+                //detach all others
+                ImageGroup.children.forEach(function(el) {
+                    //Array in ImageGroup is like => [n, t, n, t...]
+                    el.index % 2 ? ImageGroup.children[el.index].detach() : 0;
                 });
+            }
 
-                // add the group to the layer
-                layer.add(CirclesGroup);
+            function attachNew(tar) {
+                ImageGroup.children[tar + 1].attachTo(ImageGroup.children[tar]);
             }
 
             stage.add(layer);
-            // stage.add(tooltipLayer);
         </script>
 
         <!-- <div align="center">
