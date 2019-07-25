@@ -31,3 +31,16 @@ p {
     height: 100px;
     width: 100px;
 }
+
+#LayersBlock {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+}
+
+.LayerEach {
+    width: 350px;
+    height: 50px;
+    border: 2px solid blue;
+    margin: 10px auto 0 15px;
+}

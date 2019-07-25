@@ -30,7 +30,15 @@
                 draggable="true"
             />
         </div>
+        <!-- Layer System -->
+        <div id="LayersBlock">
+            <h3 class="LayerEach"></h3>
+            <h3 class="LayerEach"></h3>
+            <h3 class="LayerEach"></h3>
+            <h3 class="LayerEach"></h3>
+        </div>
         <div id="container"></div>
+
         <script>
             let width = 750;
             let height = 750;
@@ -101,6 +109,26 @@
                     );
 
                     layer.draw();
+
+                    //Layer System
+                    ImageGroup.children.forEach(function(el) {
+                        console.log(el._id);
+                        if (!(el.index % 2)) {
+                            document
+                                .getElementById("LayersBlock")
+                                .querySelectorAll("h3")[
+                                el.index / 2
+                            ].outerHTML =
+                                "<h3 class='LayerEach' data-id='" +
+                                el.index +
+                                "'>ID : " +
+                                el._id +
+                                "</h3>";
+                            LayerDetach();
+                            LayerAttach(el.index / 2);
+                        }
+                    });
+                    //=========LayerSystem
                 });
             });
             //=====Drag & Drop Image
@@ -146,11 +174,30 @@
                     //Array in ImageGroup is like => [n, t, n, t...]
                     el.index % 2 ? ImageGroup.children[el.index].detach() : 0;
                 });
+                LayerDetach();
             }
 
             function attachNew(tar) {
                 ImageGroup.children[tar + 1].attachTo(ImageGroup.children[tar]);
+                LayerAttach(tar / 2);
             }
+
+            // Layer System
+            function LayerAttach(index) {
+                document.getElementById("LayersBlock").querySelectorAll("h3")[
+                    index
+                ].style.border = "2px solid red";
+            }
+
+            function LayerDetach() {
+                document
+                    .getElementById("LayersBlock")
+                    .querySelectorAll("h3")
+                    .forEach(function(el) {
+                        el.style.border = "2px solid blue";
+                    });
+            }
+            // ========= Layer System
 
             stage.add(layer);
         </script>
