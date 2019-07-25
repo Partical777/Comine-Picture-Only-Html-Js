@@ -42,6 +42,7 @@
             });
             var layer = new Konva.Layer();
 
+            let ImageGroup = new Konva.Group();
             // //Tooltip
             // var shapesLayer = new Konva.Layer();
             // var tooltipLayer = new Konva.Layer();
@@ -69,13 +70,14 @@
                 stage.setPointersPositions(e);
 
                 Konva.Image.fromURL(itemURL, function(image) {
-                    layer.add(image);
+                    ImageGroup.add(image);
                     stage.getPointerPosition().x -= 200;
                     stage.getPointerPosition().y -= 200;
 
                     image.position(stage.getPointerPosition());
                     image.draggable(true);
 
+                    layer.add(ImageGroup);
                     layer.draw();
                 });
             });
@@ -114,17 +116,17 @@
             // tooltipLayer.add(tooltip);
             // //=====Tooltip
 
-            //Hover
+            //Event
             let tmp;
             let CirclesGroup = new Konva.Group();
 
-            layer.on("mouseover", function(evt) {
+            ImageGroup.on("mouseover", function(evt) {
                 var shape = evt.target;
                 document.body.style.cursor = "move";
                 shape.stroke("#fc766a");
                 layer.draw();
             });
-            layer.on("mouseout", function(evt) {
+            ImageGroup.on("mouseout", function(evt) {
                 var shape = evt.target;
                 if (shape !== tmp) {
                     document.body.style.cursor = "default";
@@ -132,7 +134,7 @@
                     layer.draw();
                 }
             });
-            layer.on("click", function(evt) {
+            ImageGroup.on("click", function(evt) {
                 var shape = evt.target;
                 //if click others shape
                 if (tmp !== undefined && shape !== tmp) {
@@ -144,11 +146,24 @@
                 document.body.style.cursor = "default";
                 shape.stroke("#fc766a");
                 shape.strokeWidth(7.5);
-                console.log(shape.attrs.x + "+" + shape.attrs.y);
                 AddCircles(shape.attrs.x, shape.attrs.y);
                 layer.draw();
             });
-            //=====Hover
+            ImageGroup.on("dragmove", function(evt) {
+                //Like CircleGroup Move
+                var shape = evt.target;
+                if (tmp !== undefined && shape !== tmp) {
+                    tmp.stroke("");
+                    tmp.strokeWidth(2);
+                }
+                document.body.style.cursor = "default";
+                shape.stroke("#fc766a");
+                shape.strokeWidth(7.5);
+                CirclesGroup.destroy();
+                AddCircles(shape.attrs.x, shape.attrs.y);
+                tmp = shape;
+            });
+            //=====Event
 
             function AddCircles(x, y) {
                 let arr = [
