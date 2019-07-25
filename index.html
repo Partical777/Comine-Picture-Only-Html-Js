@@ -42,9 +42,9 @@
             });
             var layer = new Konva.Layer();
 
-            //Tooltip
-            var shapesLayer = new Konva.Layer();
-            var tooltipLayer = new Konva.Layer();
+            // //Tooltip
+            // var shapesLayer = new Konva.Layer();
+            // var tooltipLayer = new Konva.Layer();
 
             //     Drag & Drop Image
             // what is url of dragging element?
@@ -81,41 +81,56 @@
             });
             //=====Drag & Drop Image
 
-            //     Tooltip
-            layer.addEventListener("mousemove", function(e) {
-                e.preventDefault();
-                stage.setPointersPositions(e);
-                var mousePos = stage.getPointerPosition();
-                tooltip.position({
-                    x: mousePos.x - 60,
-                    y: mousePos.y - 50
-                });
-                tooltip.text("Hello World!");
-                tooltip.show();
-                tooltipLayer.batchDraw();
-            });
+            // //     Tooltip
+            // layer.addEventListener("mousemove", function(e) {
+            //     e.preventDefault();
+            //     stage.setPointersPositions(e);
+            //     var mousePos = stage.getPointerPosition();
+            //     tooltip.position({
+            //         x: mousePos.x - 60,
+            //         y: mousePos.y - 50
+            //     });
+            //     tooltip.text("Hello World!");
+            //     tooltip.show();
+            //     tooltipLayer.batchDraw();
+            // });
 
-            layer.addEventListener("mouseout", function(e) {
-                tooltip.hide();
-                tooltipLayer.draw();
-            });
+            // layer.addEventListener("mouseout", function(e) {
+            //     tooltip.hide();
+            //     tooltipLayer.draw();
+            // });
 
-            var tooltip = new Konva.Text({
-                text: "",
-                fontFamily: "Calibri",
-                fontSize: 24,
-                padding: 5,
-                textFill: "white",
-                fill: "black",
-                alpha: 0.75,
-                visible: false
-            });
+            // var tooltip = new Konva.Text({
+            //     text: "",
+            //     fontFamily: "Calibri",
+            //     fontSize: 24,
+            //     padding: 5,
+            //     textFill: "white",
+            //     fill: "black",
+            //     alpha: 0.75,
+            //     visible: false
+            // });
 
-            tooltipLayer.add(tooltip);
-            //=====Tooltip
+            // tooltipLayer.add(tooltip);
+            // //=====Tooltip
+
+            //Hover
+            layer.on("mouseover", function(evt) {
+                var shape = evt.target;
+                document.body.style.cursor = "pointer";
+                shape.stroke("#fc766a");
+                layer.draw();
+            });
+            layer.on("mouseout", function(evt) {
+                var shape = evt.target;
+                document.body.style.cursor = "default";
+                shape.stroke("");
+                layer.draw();
+            });
+            //=====Hover
 
             stage.add(layer);
-            stage.add(tooltipLayer);
+            // stage.add(tooltipLayer);
         </script>
 
         <!-- <div align="center">
