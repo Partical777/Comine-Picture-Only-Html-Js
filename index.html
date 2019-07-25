@@ -32,15 +32,23 @@
         </div>
         <div id="container"></div>
         <script>
-            var width = 750;
-            var height = 750;
+            let width = 750;
+            let height = 750;
 
-            var stage = new Konva.Stage({
+            let stage = new Konva.Stage({
                 container: "container",
                 width: width,
                 height: height
             });
-            var layer = new Konva.Layer();
+            let layer = new Konva.Layer();
+            let Background = new Konva.Rect({
+                x: 0,
+                y: 0,
+                width: width,
+                height: height
+            });
+
+            layer.add(Background);
 
             let ImageGroup = new Konva.Group();
             // //Tooltip
@@ -49,14 +57,14 @@
 
             //     Drag & Drop Image
             // what is url of dragging element?
-            var itemURL = "";
+            let itemURL = "";
             document
                 .getElementById("drag-items")
                 .addEventListener("dragstart", function(e) {
                     itemURL = e.target.src;
                 });
 
-            var con = stage.container();
+            let con = stage.container();
             con.addEventListener("dragover", function(e) {
                 e.preventDefault(); // !important
             });
@@ -121,13 +129,13 @@
             let CirclesGroup = new Konva.Group();
 
             ImageGroup.on("mouseover", function(evt) {
-                var shape = evt.target;
+                let shape = evt.target;
                 document.body.style.cursor = "move";
                 shape.stroke("#fc766a");
                 layer.draw();
             });
             ImageGroup.on("mouseout", function(evt) {
-                var shape = evt.target;
+                let shape = evt.target;
                 if (shape !== tmp) {
                     document.body.style.cursor = "default";
                     shape.stroke("");
@@ -135,7 +143,7 @@
                 }
             });
             ImageGroup.on("click", function(evt) {
-                var shape = evt.target;
+                let shape = evt.target;
                 //if click others shape
                 if (tmp !== undefined && shape !== tmp) {
                     tmp.stroke("");
@@ -151,7 +159,7 @@
             });
             ImageGroup.on("dragmove", function(evt) {
                 //Like CircleGroup Move
-                var shape = evt.target;
+                let shape = evt.target;
                 if (tmp !== undefined && shape !== tmp) {
                     tmp.stroke("");
                     tmp.strokeWidth(2);
@@ -162,6 +170,18 @@
                 CirclesGroup.destroy();
                 AddCircles(shape.attrs.x, shape.attrs.y);
                 tmp = shape;
+                layer.draw();
+            });
+            Background.on("click", function(evt) {
+                //click background to get blur
+                let shape = evt.target;
+                if (tmp !== undefined) {
+                    tmp.stroke("");
+                    tmp.strokeWidth(2);
+                    CirclesGroup.destroy();
+                }
+                tmp = undefined;
+                layer.draw();
             });
             //=====Event
 
