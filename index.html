@@ -115,19 +115,68 @@
             // //=====Tooltip
 
             //Hover
+            let tmp;
+            let CirclesGroup = new Konva.Group();
+
             layer.on("mouseover", function(evt) {
                 var shape = evt.target;
-                document.body.style.cursor = "pointer";
+                document.body.style.cursor = "move";
                 shape.stroke("#fc766a");
                 layer.draw();
             });
             layer.on("mouseout", function(evt) {
                 var shape = evt.target;
+                if (shape !== tmp) {
+                    document.body.style.cursor = "default";
+                    shape.stroke("");
+                    layer.draw();
+                }
+            });
+            layer.on("click", function(evt) {
+                var shape = evt.target;
+                //if click others shape
+                if (tmp !== undefined && shape !== tmp) {
+                    tmp.stroke("");
+                    tmp.strokeWidth(2);
+                    group.destroy();
+                }
+                tmp = shape;
                 document.body.style.cursor = "default";
-                shape.stroke("");
+                shape.stroke("#fc766a");
+                shape.strokeWidth(7.5);
+                console.log(shape.attrs.x + "+" + shape.attrs.y);
+                AddCircles(shape.attrs.x, shape.attrs.y);
                 layer.draw();
             });
             //=====Hover
+
+            function AddCircles(x, y) {
+                let arr = [
+                    [0, 0],
+                    [1, 0],
+                    [2, 0],
+                    [0, 1],
+                    [2, 1],
+                    [0, 2],
+                    [1, 2],
+                    [2, 2]
+                ];
+                arr.forEach(function(el) {
+                    let circle = new Konva.Circle({
+                        x: x + 210 * el[0],
+                        y: y + 210 * el[1],
+                        radius: 12,
+                        fill: "red",
+                        stroke: "black",
+                        strokeWidth: 4
+                    });
+                    // add the circle to the group
+                    CirclesGroup.add(circle);
+                });
+
+                // add the group to the layer
+                layer.add(CirclesGroup);
+            }
 
             stage.add(layer);
             // stage.add(tooltipLayer);
