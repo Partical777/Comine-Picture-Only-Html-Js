@@ -44,3 +44,8 @@ p {
     border: 2px solid blue;
     margin: 10px auto 0 15px;
 }
+
+button {
+    height: 50px;
+    margin: 15px;
+}
