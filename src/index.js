@@ -62,6 +62,7 @@ con.addEventListener("drop", function(e) {
         tr.attachTo(ImageGroup.children[ImageGroup.children.length - 2]);
         layer.draw();
         //Layer System
+        AddNewLayerInHtml();
         CurrentSelected =
             ImageGroup.children[ImageGroup.children.length - 2].index;
         SortLayer();
@@ -121,6 +122,11 @@ function attachNew(tar) {
 }
 
 // Layer System
+function AddNewLayerInHtml() {
+    let layerBox = document.createElement("h3");
+    layerBox.className = "LayerEach";
+    document.getElementById("LayersBlock").appendChild(layerBox);
+}
 
 function LayerAttach(index) {
     document.getElementById("LayersBlock").querySelectorAll("h3")[
