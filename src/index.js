@@ -208,15 +208,29 @@ stage.add(layer);
 =======================================================================*/
 // Right Click
 $(document).bind("contextmenu", function(e) {
-    e.preventDefault();
-    $("#cntnr").css("left", e.pageX);
-    $("#cntnr").css("top", e.pageY);
-    $("#cntnr").fadeIn(200, startFocusOut());
     //If select sth. ,showing the Move Up & Down
     $(".MoveLayer").show();
     if (CurrentSelected == undefined) {
         $(".MoveLayer").hide();
     }
+    // console.log($("#cntnr").height() + " " + $("#cntnr").width());
+    // console.log(e.pageX + " " + $(window).width());
+    // console.log(e.pageY + " " + $(window).height());
+
+    e.preventDefault();
+    $("#cntnr").css("left", function() {
+        //prevent the RightClickMenu over the window
+        return e.pageX + $("#cntnr").width() < $(window).width()
+            ? e.pageX
+            : e.pageX - $("#cntnr").width();
+    });
+    $("#cntnr").css("top", function() {
+        //prevent the RightClickMenu over the window
+        return e.pageY + $("#cntnr").height() < $(window).height()
+            ? e.pageY
+            : e.pageY - $("#cntnr").height();
+    });
+    $("#cntnr").fadeIn(200, startFocusOut());
 });
 
 function startFocusOut() {
