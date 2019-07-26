@@ -1,69 +1,136 @@
-import "./styles.css";
-
-let x = 0;
-
-document.getElementById("combineMe1").addEventListener("click", combineImages1);
-document.getElementById("combineMe2").addEventListener("click", combineImages2);
-
-function combineImages1() {
-    draw(data1, function() {
-        document.getElementById("imgBox1").innerHTML =
-            '<p style="padding:10px 0">success！</p><img src="' +
-            base64[x] +
-            '">';
-        x++;
+let width = 750;
+let height = 750;
+let imagewh = 210; //half 420
+let trStyle = {
+    //transform Style
+    anchorStroke: "#fc766a",
+    anchorSize: 25,
+    borderStroke: "#fc766a",
+    borderStrokeWidth: 5,
+    anchorCornerRadius: 50
+};
+let stage = new Konva.Stage({
+    container: "container",
+    width: width,
+    height: height
+});
+let layer = new Konva.Layer();
+let Background = new Konva.Rect({
+    x: 0,
+    y: 0,
+    width: width,
+    height: height
+});
+layer.add(Background);
+let ImageGroup = new Konva.Group();
+//     Drag & Drop Image
+// what is url of dragging element?
+let itemURL = "";
+document
+    .getElementById("drag-items")
+    .addEventListener("dragstart", function(e) {
+        itemURL = e.target.src;
     });
-}
-function combineImages2() {
-    draw(data2, function() {
-        document.getElementById("imgBox2").innerHTML =
-            '<p style="padding:10px 0">success！</p><img src="' +
-            base64[x] +
-            '">';
-        x++;
+let con = stage.container();
+con.addEventListener("dragover", function(e) {
+    e.preventDefault(); // !important
+});
+con.addEventListener("drop", function(e) {
+    e.preventDefault();
+    // now we need to find pointer position
+    // we can't use stage.getPointerPosition() here, because that event
+    // is not registered by Konva.Stage
+    // we can register it manually:
+    stage.setPointersPositions(e);
+    Konva.Image.fromURL(itemURL, function(image) {
+        ImageGroup.add(image);
+        stage.getPointerPosition().x -= imagewh;
+        stage.getPointerPosition().y -= imagewh;
+        image.position(stage.getPointerPosition());
+        image.draggable(true);
+        layer.add(ImageGroup);
+        let tr = new Konva.Transformer(trStyle);
+        ImageGroup.add(tr);
+        detachAll();
+        tr.attachTo(ImageGroup.children[ImageGroup.children.length - 2]);
+        layer.draw();
+        //Layer System
+        ImageGroup.children.forEach(function(el) {
+            console.log(el._id);
+            if (!(el.index % 2)) {
+                document.getElementById("LayersBlock").querySelectorAll("h3")[
+                    el.index / 2
+                ].outerHTML =
+                    "<h3 class='LayerEach' data-id='" +
+                    el.index +
+                    "'>ID : " +
+                    el._id +
+                    "</h3>";
+                LayerDetach();
+                LayerAttach(el.index / 2);
+            }
+        });
+        //=========LayerSystem
     });
+});
+//=====Drag & Drop Image
+//Event
+ImageGroup.on("mouseover", function(evt) {
+    let shape = evt.target;
+    document.body.style.cursor = "move";
+    shape.stroke("#fc766a");
+    layer.draw();
+});
+ImageGroup.on("mouseout", function(evt) {
+    let shape = evt.target;
+    document.body.style.cursor = "default";
+    shape.stroke("");
+    layer.draw();
+});
+ImageGroup.on("click", function(evt) {
+    let shape = evt.target;
+    detachAll();
+    attachNew(shape.index);
+    layer.draw();
+});
+ImageGroup.on("dragmove", function(evt) {
+    let shape = evt.target;
+    detachAll();
+    attachNew(shape.index);
+    layer.draw();
+});
+Background.on("click", function(evt) {
+    //click background to get blur
+    let shape = evt.target;
+    detachAll();
+    layer.draw();
+});
+//=====Event
+function detachAll() {
+    //detach all others
+    ImageGroup.children.forEach(function(el) {
+        //Array in ImageGroup is like => [n, t, n, t...]
+        el.index % 2 ? ImageGroup.children[el.index].detach() : 0;
+    });
+    LayerDetach();
 }
-
-var data1 = [
-        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-1.png",
-        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-2.png",
-        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-3.png",
-        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-4.png"
-    ],
-    data2 = [
-        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/2-1.png",
-        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/2-2.png",
-        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/2-3.png",
-        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/2-4.png",
-        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/2-5.png",
-        "https://partical777.github.io/Comine-Picture-Only-Html-Js/img/2-6.png"
-    ],
-    base64 = [];
-function draw(data, fn) {
-    var c = document.createElement("canvas"),
-        ctx = c.getContext("2d"),
-        len = data.length;
-    // canvas必須設定確定的寬高
-    c.width = 500;
-    c.height = 500;
-    ctx.rect(0, 0, c.width, c.height);
-    ctx.fillStyle = "#fff";
-    ctx.fill();
-
-    function drawing(n) {
-        if (n < len) {
-            var img = new Image();
-            img.setAttribute("crossOrigin", "anonymous"); //解决跨域
-            img.src = data[n];
-            img.onload = function() {
-                ctx.drawImage(img, 0, 0, 500, 500);
-                drawing(n + 1);
-            };
-        } else {
-            base64.push(c.toDataURL("image/png"));
-            //alert(JSON.stringify(base64));
-            fn();
-        }
-    }
-    drawing(0);
+function attachNew(tar) {
+    ImageGroup.children[tar + 1].attachTo(ImageGroup.children[tar]);
+    LayerAttach(tar / 2);
 }
+// Layer System
+function LayerAttach(index) {
+    document.getElementById("LayersBlock").querySelectorAll("h3")[
+        index
+    ].style.border = "2px solid red";
+}
+function LayerDetach() {
+    document
+        .getElementById("LayersBlock")
+        .querySelectorAll("h3")
+        .forEach(function(el) {
+            el.style.border = "2px solid blue";
+        });
+}
+// ========= Layer System
+stage.add(layer);
