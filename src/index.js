@@ -1,3 +1,7 @@
+/* ======================================================================
+===============================Konva=====================================
+=======================================================================*/
+
 let width = 750;
 let height = 750;
 let imagewh = 210; //half 420
@@ -117,16 +121,6 @@ function attachNew(tar) {
 }
 
 // Layer System
-document.getElementById("UpLayer").addEventListener("click", function() {
-    if (CurrentSelected !== undefined) {
-        UpLayer(CurrentSelected);
-    }
-});
-document.getElementById("DownLayer").addEventListener("click", function() {
-    if (CurrentSelected !== undefined) {
-        DownLayer(CurrentSelected);
-    }
-});
 
 function LayerAttach(index) {
     document.getElementById("LayersBlock").querySelectorAll("h3")[
@@ -202,3 +196,37 @@ function DownLayer(tar) {
 }
 // ========= Layer System
 stage.add(layer);
+
+/* ======================================================================
+=============================== Right Click=====================================
+=======================================================================*/
+// Right Click
+$(document).bind("contextmenu", function(e) {
+    e.preventDefault();
+    $("#cntnr").css("left", e.pageX);
+    $("#cntnr").css("top", e.pageY);
+    $("#cntnr").fadeIn(200, startFocusOut());
+    //If select sth. ,showing the Move Up & Down
+    $(".MoveLayer").show();
+    if (CurrentSelected == undefined) {
+        $(".MoveLayer").hide();
+    }
+});
+
+function startFocusOut() {
+    $(document).on("click", function() {
+        $("#cntnr").hide();
+        $(document).off("click");
+    });
+}
+
+$("#RightClickItems > li").click(function() {
+    $("#op").text("You have selected " + $(this).text());
+    if (CurrentSelected !== undefined) {
+        if ($(this).text() === "Move Up") {
+            UpLayer(CurrentSelected);
+        } else if ($(this).text() === "Move Down") {
+            DownLayer(CurrentSelected);
+        }
+    }
+});

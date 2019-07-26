@@ -6,6 +6,12 @@
 
         <script src="https://unpkg.com/konva@3.4.1/konva.min.js"></script>
         <link rel="stylesheet" type="text/css" href="./src/styles.css" />
+        <link rel="stylesheet" type="text/css" href="./src/RightClick.css" />
+        <script
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"
+        ></script>
     </head>
 
     <body>
@@ -32,16 +38,37 @@
         </div>
         <!-- Layer System -->
         <div id="LayersBlock">
+            <span id="op">Demo</span>
             <h3 class="LayerEach"></h3>
             <h3 class="LayerEach"></h3>
             <h3 class="LayerEach"></h3>
             <h3 class="LayerEach"></h3>
-            <button id="UpLayer">Up Layer</button>
-            <button id="DownLayer">Down Layer</button>
         </div>
+        <!-- Konva -->
         <div id="container"></div>
+        <!-- Right Click -->
+        <div id="cntnr">
+            <ul id="RightClickItems" class="MoveLayer">
+                <li>Move Up</li>
+                <li>Move Down</li>
+                <hr />
+            </ul>
+            <ul id="RightClickItems">
+                <li>Copy</li>
+                <li>Paste</li>
+                <li>Delete</li>
+            </ul>
+            <hr />
+            <ul id="RightClickItems">
+                <li>Lock selection</li>
+            </ul>
+            <hr />
+            <ul id="RightClickItems">
+                <li>Send to Back</li>
+                <li>Bring to Front</li>
+            </ul>
+        </div>
 
         <script src="src/index.js"></script>
-        -->
     </body>
 </html>

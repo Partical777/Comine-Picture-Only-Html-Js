@@ -1,0 +1,38 @@
+#RightClickItems {
+    list-style: none;
+    margin: 0px;
+    margin-top: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 3px;
+    font-size: 17px;
+    color: #333333;
+}
+
+hr {
+    width: 85%;
+    background-color: #e4e4e4;
+    border-color: #e4e4e4;
+    color: #e4e4e4;
+}
+
+#cntnr {
+    display: none;
+    position: fixed;
+    border: 1px solid #b2b2b2;
+    width: 250px;
+    background: #f9f9f9;
+    box-shadow: 3px 3px 2px #e9e9e9;
+    border-radius: 4px;
+}
+
+#cntnr li {
+    padding: 3px;
+    padding-left: 10px;
+}
+
+#RightClickItems :hover {
+    color: white;
+    background: #284570;
+    border-radius: 2px;
+}
