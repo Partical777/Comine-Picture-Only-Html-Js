@@ -1,3 +1,10 @@
+/*                          Tree Diagram Route
+
+stage => layer => Background(Rect)
+               => ImageGroup(Group) => ImageTrLayer(Group)  => image
+                                            ...             => tr(Transformer)
+                                            ...
+*/
 /* ======================================================================
 ===============================Konva=====================================
 =======================================================================*/
@@ -50,24 +57,29 @@ con.addEventListener("drop", function(e) {
     // we can register it manually:
     stage.setPointersPositions(e);
     Konva.Image.fromURL(itemURL, function(image) {
-        ImageGroup.add(image);
+        let ImageTrLayer = new Konva.Group();
+        ImageTrLayer.add(image);
         stage.getPointerPosition().x -= imagewh;
         stage.getPointerPosition().y -= imagewh;
         image.position(stage.getPointerPosition());
         image.draggable(true);
         layer.add(ImageGroup);
         let tr = new Konva.Transformer(trStyle);
-        ImageGroup.add(tr);
+        ImageTrLayer.add(tr);
+        ImageGroup.add(ImageTrLayer);
+        // console.log(ImageGroup.children[0].children);
         detachAll();
-        tr.attachTo(ImageGroup.children[ImageGroup.children.length - 2]);
+        tr.attachTo(
+            ImageGroup.children[ImageGroup.children.length - 1].children[0]
+        );
         layer.draw();
         //Layer System
         AddNewLayerInHtml();
         CurrentSelected =
-            ImageGroup.children[ImageGroup.children.length - 2].index;
-        SortLayer();
-        LayerDetach();
-        LayerAttach(ImageGroup.children.length / 2 - 1);
+            ImageGroup.children[ImageGroup.children.length - 1].index;
+        SortLayerHtml();
+        LayerDetachStyle();
+        LayerAttachStyle(ImageGroup.children.length - 1);
 
         //=========LayerSystem
     });
@@ -89,18 +101,17 @@ ImageGroup.on("mouseout", function(evt) {
 ImageGroup.on("click", function(evt) {
     let shape = evt.target;
     detachAll();
-    attachNew(shape.index);
+    attachNew(shape.parent);
     layer.draw();
 });
 ImageGroup.on("dragmove", function(evt) {
     let shape = evt.target;
     detachAll();
-    attachNew(shape.index);
+    attachNew(shape.parent);
     layer.draw();
 });
 Background.on("click", function(evt) {
     //click background to get blur
-    let shape = evt.target;
     detachAll();
     layer.draw();
 });
@@ -110,15 +121,16 @@ function detachAll() {
     //detach all others
     ImageGroup.children.forEach(function(el) {
         //Array in ImageGroup is like => [n, t, n, t...]
-        el.index % 2 ? ImageGroup.children[el.index].detach() : 0;
+        el.children[1].detach();
     });
-    LayerDetach();
+    LayerDetachStyle();
     CurrentSelected = undefined;
 }
 function attachNew(tar) {
-    ImageGroup.children[tar + 1].attachTo(ImageGroup.children[tar]);
-    LayerAttach(tar / 2);
-    CurrentSelected = tar;
+    let thisLayer = ImageGroup.children[tar.index];
+    thisLayer.children[1].attachTo(thisLayer.children[0]);
+    LayerAttachStyle(tar.index);
+    CurrentSelected = tar.index;
 }
 
 // Layer System
@@ -128,13 +140,13 @@ function AddNewLayerInHtml() {
     document.getElementById("LayersBlock").appendChild(layerBox);
 }
 
-function LayerAttach(index) {
+function LayerAttachStyle(index) {
     document.getElementById("LayersBlock").querySelectorAll("h3")[
         index
     ].style.border = "2px solid red";
 }
 
-function LayerDetach() {
+function LayerDetachStyle() {
     document
         .getElementById("LayersBlock")
         .querySelectorAll("h3")
@@ -143,38 +155,26 @@ function LayerDetach() {
         });
 }
 
-function SortLayer() {
+function SortLayerHtml() {
     ImageGroup.children.forEach(function(el) {
-        if (!(el.index % 2)) {
-            document.getElementById("LayersBlock").querySelectorAll("h3")[
-                el.index / 2
-            ].outerHTML =
-                "<h3 class='LayerEach' data-id='" +
-                el.index +
-                "'>ID : " +
-                el._id +
-                "</h3>";
-        }
+        document.getElementById("LayersBlock").querySelectorAll("h3")[
+            el.index
+        ].outerHTML =
+            "<h3 class='LayerEach' data-id='" +
+            el.index +
+            "'>ID : " +
+            el._id +
+            "</h3>";
     });
 }
 
 function UpLayer(tar) {
-    //tar => image index in ImageGroup
-    let maxLength = ImageGroup.children.length;
-    ImageGroup.children[tar].index =
-        tar === maxLength - 2 ? maxLength - 2 : tar + 2; //0
-    ImageGroup.children[tar + 1].index =
-        tar + 1 === maxLength - 1 ? maxLength - 1 : tar + 1 + 2; //1
-    if (tar !== maxLength - 2) {
-        ImageGroup.children[tar + 2].index = tar + 2 - 2; //2
-        ImageGroup.children[tar + 3].index = tar + 3 - 2; //3
-        CurrentSelected += 2;
-        ImageGroup.children.sort(function(a, b) {
-            return a.index - b.index;
-        });
-        // console.log(ImageGroup.children);
-        SortLayer();
-        LayerAttach(tar / 2 + 1);
+    //tar => ImageTrLayer index in ImageGroup
+    let moveDone = ImageGroup.children[tar].moveUp();
+    if (moveDone) {
+        SortLayerHtml();
+        CurrentSelected = tar + 1;
+        LayerAttachStyle(CurrentSelected);
     }
     console.log(ImageGroup.children);
 
@@ -182,24 +182,44 @@ function UpLayer(tar) {
 }
 
 function DownLayer(tar) {
-    //tar => image index in ImageGroup
-    ImageGroup.children[tar].index = tar === 0 ? 0 : tar - 2; //2
-    ImageGroup.children[tar + 1].index = tar + 1 === 1 ? 1 : tar + 1 - 2; //3
-    if (tar !== 0) {
-        ImageGroup.children[tar - 2].index = tar - 2 + 2; //0
-        ImageGroup.children[tar - 1].index = tar - 1 + 2; //1
-        CurrentSelected -= 2;
-        ImageGroup.children.sort(function(a, b) {
-            return a.index - b.index;
-        });
-        // console.log(ImageGroup.children);
-        SortLayer();
-        LayerAttach(tar / 2 - 1);
+    //tar => ImageTrLayer index in ImageGroup
+    let moveDone = ImageGroup.children[tar].moveDown();
+    if (moveDone) {
+        SortLayerHtml();
+        CurrentSelected = tar - 1;
+        LayerAttachStyle(CurrentSelected);
     }
     console.log(ImageGroup.children);
 
     layer.draw();
 }
+
+function toTopLayer(tar) {
+    //tar => ImageTrLayer index in ImageGroup
+    let moveDone = ImageGroup.children[tar].moveToTop();
+    if (moveDone) {
+        SortLayerHtml();
+        CurrentSelected = ImageGroup.children.length - 1;
+        LayerAttachStyle(CurrentSelected);
+    }
+    console.log(ImageGroup.children);
+
+    layer.draw();
+}
+
+function toBottomLayer(tar) {
+    //tar => ImageTrLayer index in ImageGroup
+    let moveDone = ImageGroup.children[tar].moveToBottom();
+    if (moveDone) {
+        SortLayerHtml();
+        CurrentSelected = 0;
+        LayerAttachStyle(CurrentSelected);
+    }
+    console.log(ImageGroup.children);
+
+    layer.draw();
+}
+
 // ========= Layer System
 stage.add(layer);
 
@@ -243,10 +263,20 @@ function startFocusOut() {
 $("#RightClickItems > li").click(function() {
     $("#op").text("You have selected " + $(this).text());
     if (CurrentSelected !== undefined) {
-        if ($(this).text() === "Move Up") {
-            UpLayer(CurrentSelected);
-        } else if ($(this).text() === "Move Down") {
-            DownLayer(CurrentSelected);
+        switch ($(this).text()) {
+            case "Move Up":
+                UpLayer(CurrentSelected);
+                break;
+            case "Move Down":
+                DownLayer(CurrentSelected);
+                break;
+            case "to Top":
+                toTopLayer(CurrentSelected);
+                break;
+            case "to Bottom":
+                toBottomLayer(CurrentSelected);
+                break;
+            default:
         }
     }
 });
