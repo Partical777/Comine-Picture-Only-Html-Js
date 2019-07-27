@@ -250,3 +250,27 @@ $("#RightClickItems > li").click(function() {
         }
     }
 });
+
+/* ======================================================================
+==============================Output Image===============================
+=======================================================================*/
+function downloadURI(uri, name) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+document.getElementById("save").addEventListener(
+    "click",
+    function() {
+        detachAll();
+        var dataURL = stage.toDataURL();
+        // Get High Quality Image
+        // var dataURL = stage.toDataURL({ pixelRatio: 3 });
+        downloadURI(dataURL, "stage.png");
+    },
+    false
+);
