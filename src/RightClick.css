@@ -51,6 +51,7 @@ hr {
 
 /*Side Nav*/
 #mainNavigation {
+    z-index: 2;
     overflow: auto;
     width: 430px;
     height: 100%;

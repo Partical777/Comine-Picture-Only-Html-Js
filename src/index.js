@@ -85,6 +85,45 @@ con.addEventListener("drop", function(e) {
     });
 });
 //=====Drag & Drop Image
+//Double Click Image
+document.getElementById("drag-items").addEventListener("dblclick", function(e) {
+    itemURL = e.target.src;
+    e.preventDefault();
+    // now we need to find pointer position
+    // we can't use stage.getPointerPosition() here, because that event
+    // is not registered by Konva.Stage
+    // we can register it manually:
+    stage.setPointersPositions(e);
+    Konva.Image.fromURL(itemURL, function(image) {
+        let ImageTrLayer = new Konva.Group();
+        ImageTrLayer.add(image);
+        stage.getPointerPosition().x = width / 2 - imagewh;
+        stage.getPointerPosition().y = height / 2 - imagewh;
+        image.position(stage.getPointerPosition());
+        image.draggable(true);
+        layer.add(ImageGroup);
+        let tr = new Konva.Transformer(trStyle);
+        ImageTrLayer.add(tr);
+        ImageGroup.add(ImageTrLayer);
+        // console.log(ImageGroup.children[0].children);
+        detachAll();
+        tr.attachTo(
+            ImageGroup.children[ImageGroup.children.length - 1].children[0]
+        );
+        layer.draw();
+        //Layer System
+        AddNewLayerInHtml();
+        CurrentSelected =
+            ImageGroup.children[ImageGroup.children.length - 1].index;
+        SortLayerHtml();
+        LayerDetachStyle();
+        LayerAttachStyle(ImageGroup.children.length - 1);
+
+        //=========LayerSystem
+    });
+});
+//=====Double Click Image
+
 //Event
 ImageGroup.on("mouseover", function(evt) {
     let shape = evt.target;
