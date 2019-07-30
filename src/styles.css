@@ -15,6 +15,7 @@ body {
 
 #container {
     text-align: center;
+    padding: 10vh 0;
 }
 
 .konvajs-content {
@@ -28,24 +29,26 @@ p {
 }
 
 #drag-items img {
-    height: 100px;
-    width: 100px;
-}
-
-#LayersBlock {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-}
-
-.LayerEach {
-    width: 350px;
-    height: 50px;
-    border: 2px solid blue;
-    margin: 10px auto 0 15px;
+    height: 200px;
+    width: 200px;
 }
 
 button {
     height: 50px;
     margin: 15px;
+}
+
+h3 > button {
+    margin: 0;
+    float: right;
+    width: 100px;
+    height: 100%;
+    border-radius: 8px;
+    background: rgb(250, 112, 154);
+    background: linear-gradient(
+        -20deg,
+        rgba(250, 112, 154, 1) 25%,
+        rgba(254, 225, 64, 1) 75%
+    );
+    cursor: pointer;
 }

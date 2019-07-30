@@ -15,32 +15,84 @@
     </head>
 
     <body>
+        <aside id="mainNavigation">
+            <p>
+                Drag&drop yoda into the grey area.
+            </p>
+            <div id="drag-items">
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-1.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-2.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-3.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-4.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-1.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-2.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-3.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-4.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-1.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-2.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-3.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-4.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-1.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-2.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-3.png"
+                    draggable="true"
+                />
+                <img
+                    src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-4.png"
+                    draggable="true"
+                />
+            </div>
+        </aside>
         <button id="save" style="float:right">Save as Image</button>
-        <p>
-            Drag&drop yoda into the grey area.
-        </p>
-        <div id="drag-items">
-            <img
-                src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-1.png"
-                draggable="true"
-            />
-            <img
-                src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-2.png"
-                draggable="true"
-            />
-            <img
-                src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-3.png"
-                draggable="true"
-            />
-            <img
-                src="https://partical777.github.io/Comine-Picture-Only-Html-Js/img/1-4.png"
-                draggable="true"
-            />
-        </div>
-        <!-- Layer System -->
-        <div id="LayersBlock">
-            <span id="op">Layer</span>
-        </div>
+
+        <!-- floating Layer System -->
+        <nav id="LayersBlock">
+            <div id="mydivheader">Layer</div>
+        </nav>
+
         <!-- Konva -->
         <div id="container"></div>
         <!-- Right Click -->
@@ -52,14 +104,15 @@
                 <li>to Bottom</li>
                 <hr />
             </ul>
+            <ul id="RightClickItems" class="toggleLockLayer">
+                <li class="LockLayer">Lock</li>
+                <li class="UnlockLayer">Unlock</li>
+                <hr />
+            </ul>
             <ul id="RightClickItems">
                 <li>Copy</li>
                 <li>Paste</li>
                 <li>Delete</li>
-            </ul>
-            <hr />
-            <ul id="RightClickItems">
-                <li>Lock selection</li>
             </ul>
             <hr />
             <ul id="RightClickItems">
