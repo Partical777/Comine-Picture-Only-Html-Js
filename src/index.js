@@ -29,13 +29,7 @@ let stage = new Konva.Stage({
     height: height
 });
 let layer = new Konva.Layer();
-let Background = new Konva.Rect({
-    x: 0,
-    y: 0,
-    width: width,
-    height: height
-});
-layer.add(Background);
+
 let ImageGroup = new Konva.Group();
 //     Drag & Drop Image
 // what is url of dragging element?
@@ -57,31 +51,25 @@ con.addEventListener("drop", function(e) {
     // we can register it manually:
     stage.setPointersPositions(e);
     Konva.Image.fromURL(itemURL, function(image) {
-        let ImageTrLayer = new Konva.Group();
-        ImageTrLayer.add(image);
+        ImageGroup.add(image);
         stage.getPointerPosition().x -= imagewh;
         stage.getPointerPosition().y -= imagewh;
         image.position(stage.getPointerPosition());
         image.draggable(true);
+        image.name("image");
         layer.add(ImageGroup);
-        let tr = new Konva.Transformer(trStyle);
-        ImageTrLayer.add(tr);
-        ImageGroup.add(ImageTrLayer);
-        // console.log(ImageGroup.children[0].children);
-        detachAll();
-        tr.attachTo(
-            ImageGroup.children[ImageGroup.children.length - 1].children[0]
-        );
+        attachNew(ImageGroup.children[ImageGroup.children.length - 1]);
+
         layer.draw();
-        //Layer System
+        // //Layer System
         AddNewLayerInHtml();
         CurrentSelected =
-            ImageGroup.children[ImageGroup.children.length - 1].index;
+            ImageGroup.children[ImageGroup.children.length - 2].index;
         SortLayerHtml();
         LayerDetachStyle();
-        LayerAttachStyle(ImageGroup.children.length - 1);
+        LayerAttachStyle(ImageGroup.children.length - 2);
 
-        //=========LayerSystem
+        // //=========LayerSystem
     });
 });
 //=====Drag & Drop Image
@@ -95,34 +83,51 @@ document.getElementById("drag-items").addEventListener("dblclick", function(e) {
     // we can register it manually:
     stage.setPointersPositions(e);
     Konva.Image.fromURL(itemURL, function(image) {
-        let ImageTrLayer = new Konva.Group();
-        ImageTrLayer.add(image);
+        ImageGroup.add(image);
         stage.getPointerPosition().x = width / 2 - imagewh;
         stage.getPointerPosition().y = height / 2 - imagewh;
         image.position(stage.getPointerPosition());
         image.draggable(true);
         layer.add(ImageGroup);
-        let tr = new Konva.Transformer(trStyle);
-        ImageTrLayer.add(tr);
-        ImageGroup.add(ImageTrLayer);
-        // console.log(ImageGroup.children[0].children);
-        detachAll();
-        tr.attachTo(
-            ImageGroup.children[ImageGroup.children.length - 1].children[0]
-        );
+        layer.add(ImageGroup);
+        attachNew(ImageGroup.children[ImageGroup.children.length - 1]);
+
         layer.draw();
-        //Layer System
+        // //Layer System
         AddNewLayerInHtml();
         CurrentSelected =
-            ImageGroup.children[ImageGroup.children.length - 1].index;
+            ImageGroup.children[ImageGroup.children.length - 2].index;
         SortLayerHtml();
         LayerDetachStyle();
-        LayerAttachStyle(ImageGroup.children.length - 1);
+        LayerAttachStyle(ImageGroup.children.length - 2);
 
-        //=========LayerSystem
+        // //=========LayerSystem
     });
 });
 //=====Double Click Image
+
+stage.on("click tap", function(e) {
+    // if click on empty area - remove all transformers
+    if (e.target === stage) {
+        detachAll();
+        layer.draw();
+        return;
+    }
+    // do nothing if clicked NOT on our rectangles
+    if (!e.target.hasName("image")) {
+        return;
+    }
+    // remove old transformers
+    // TODO: we can skip it if current rect is already selected
+    detachAll();
+
+    // create new transformer
+    let tr = new Konva.Transformer(trStyle);
+    ImageGroup.add(tr);
+    tr.attachTo(e.target);
+    LayerAttachStyle(e.target.index);
+    layer.draw();
+});
 
 //Event
 ImageGroup.on("mouseover", function(evt) {
@@ -137,39 +142,28 @@ ImageGroup.on("mouseout", function(evt) {
     shape.stroke("");
     layer.draw();
 });
-ImageGroup.on("click", function(evt) {
+ImageGroup.on("dragstart", function(evt) {
     let shape = evt.target;
     detachAll();
-    attachNew(shape.parent);
-    layer.draw();
-});
-ImageGroup.on("dragmove", function(evt) {
-    let shape = evt.target;
-    detachAll();
-    attachNew(shape.parent);
-    layer.draw();
-});
-Background.on("click", function(evt) {
-    //click background to get blur
-    detachAll();
+    attachNew(shape);
+    LayerAttachStyle(shape.index);
     layer.draw();
 });
 //=====Event
 
 function detachAll() {
-    //detach all others
-    ImageGroup.children.forEach(function(el) {
-        //Array in ImageGroup is like => [n, t, n, t...]
-        el.children[1].detach();
-    });
+    ImageGroup.find("Transformer").destroy();
     LayerDetachStyle();
-    CurrentSelected = undefined;
+    layer.draw();
 }
+
 function attachNew(tar) {
-    let thisLayer = ImageGroup.children[tar.index];
-    thisLayer.children[1].attachTo(thisLayer.children[0]);
-    LayerAttachStyle(tar.index);
-    CurrentSelected = tar.index;
+    detachAll();
+    // create new transformer
+    let tr = new Konva.Transformer(trStyle);
+    ImageGroup.add(tr);
+    tr.attachTo(tar);
+    layer.draw();
 }
 
 // Layer System
@@ -196,14 +190,16 @@ function LayerDetachStyle() {
 
 function SortLayerHtml() {
     ImageGroup.children.forEach(function(el) {
-        document.getElementById("LayersBlock").querySelectorAll("h3")[
-            el.index
-        ].outerHTML =
-            "<h3 class='LayerEach' data-id='" +
-            el.index +
-            "'>ID : " +
-            el._id +
-            "</h3>";
+        if (el.index !== ImageGroup.children.length - 1) {
+            document.getElementById("LayersBlock").querySelectorAll("h3")[
+                el.index
+            ].outerHTML =
+                "<h3 class='LayerEach' data-id='" +
+                el.index +
+                "'>ID : " +
+                el._id +
+                "</h3>";
+        }
     });
 }
 
