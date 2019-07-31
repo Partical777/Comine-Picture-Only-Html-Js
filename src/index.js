@@ -207,6 +207,13 @@ function SortLayerHtml() {
     });
 }
 
+function DeleteLayerHtml(tar) {
+    var element = document.getElementById("LayersBlock").querySelectorAll("h3")[
+        tar
+    ];
+    element.parentNode.removeChild(element);
+}
+
 function UpLayer(tar) {
     //tar => ImageTrLayer index in ImageGroup
     let moveDone = ImageGroup.children[tar].moveUp();
@@ -256,6 +263,12 @@ function toBottomLayer(tar) {
     }
     console.log(ImageGroup.children);
 
+    layer.draw();
+}
+
+function DeleteLayer(tar) {
+    ImageGroup.children[tar].destroy();
+    DeleteLayerHtml(tar);
     layer.draw();
 }
 
@@ -314,6 +327,9 @@ $("#RightClickItems > li").click(function() {
                 break;
             case "to Bottom":
                 toBottomLayer(CurrentSelected);
+                break;
+            case "Delete":
+                DeleteLayer(CurrentSelected);
                 break;
             default:
         }
