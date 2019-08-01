@@ -111,6 +111,8 @@ stage.on("click tap", function(e) {
     if (e.target === stage) {
         detachAll();
         layer.draw();
+
+        CurrentSelected = "";
         return;
     }
     // do nothing if clicked NOT on our rectangles
@@ -126,6 +128,8 @@ stage.on("click tap", function(e) {
     ImageGroup.add(tr);
     tr.attachTo(e.target);
     LayerAttachStyle(e.target.index);
+
+    CurrentSelected = e.target.index;
     layer.draw();
 });
 
@@ -164,6 +168,8 @@ function attachNew(tar) {
     ImageGroup.add(tr);
     tr.attachTo(tar);
     layer.draw();
+
+    CurrentSelected = tar;
 }
 
 // Layer System
@@ -211,12 +217,16 @@ function DeleteLayerHtml(tar) {
 }
 
 function UpLayer(tar) {
-    //tar => ImageTrLayer index in ImageGroup
-    let moveDone = ImageGroup.children[tar].moveUp();
-    if (moveDone) {
-        SortLayerHtml();
-        CurrentSelected = tar + 1;
-        LayerAttachStyle(CurrentSelected);
+    console.log(tar);
+    console.log(ImageGroup.children);
+    if (tar !== ImageGroup.children.length - 2) {
+        //tar => ImageTrLayer index in ImageGroup
+        let moveDone = ImageGroup.children[tar].moveUp();
+        if (moveDone) {
+            SortLayerHtml();
+            CurrentSelected = tar + 1;
+            LayerAttachStyle(CurrentSelected);
+        }
     }
     console.log(ImageGroup.children);
 
@@ -224,6 +234,8 @@ function UpLayer(tar) {
 }
 
 function DownLayer(tar) {
+    console.log(tar);
+    console.log(ImageGroup.children);
     //tar => ImageTrLayer index in ImageGroup
     let moveDone = ImageGroup.children[tar].moveDown();
     if (moveDone) {
@@ -238,10 +250,12 @@ function DownLayer(tar) {
 
 function toTopLayer(tar) {
     //tar => ImageTrLayer index in ImageGroup
-    let moveDone = ImageGroup.children[tar].moveToTop();
+    let moveDone = ImageGroup.children[tar].setZIndex(
+        ImageGroup.children.length - 2
+    );
     if (moveDone) {
         SortLayerHtml();
-        CurrentSelected = ImageGroup.children.length - 1;
+        CurrentSelected = ImageGroup.children.length - 2;
         LayerAttachStyle(CurrentSelected);
     }
     console.log(ImageGroup.children);
