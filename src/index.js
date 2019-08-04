@@ -112,7 +112,7 @@ stage.on("click tap", function(e) {
         detachAll();
         layer.draw();
 
-        CurrentSelected = "";
+        CurrentSelected = undefined;
         return;
     }
     // do nothing if clicked NOT on our rectangles
@@ -159,6 +159,8 @@ function detachAll() {
     ImageGroup.find("Transformer").destroy();
     LayerDetachStyle();
     layer.draw();
+
+    CurrentSelected = undefined;
 }
 
 function attachNew(tar) {
