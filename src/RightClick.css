@@ -39,7 +39,7 @@ hr {
 }
 
 /* Save Button */
-#save {
+.btn {
     margin-right: 20px;
     background: rgb(250, 112, 154);
     background: linear-gradient(
