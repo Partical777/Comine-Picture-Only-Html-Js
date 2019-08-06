@@ -112,7 +112,7 @@ stage.on("click tap", function(e) {
         detachAll();
         layer.draw();
 
-        CurrentSelected = "";
+        CurrentSelected = undefined;
         return;
     }
     // do nothing if clicked NOT on our rectangles
@@ -159,6 +159,8 @@ function detachAll() {
     ImageGroup.find("Transformer").destroy();
     LayerDetachStyle();
     layer.draw();
+
+    CurrentSelected = undefined;
 }
 
 function attachNew(tar) {
@@ -419,3 +421,64 @@ function dragElement(elmnt) {
         document.onmousemove = null;
     }
 }
+
+//Save and Get Local
+document.getElementById("saveLocal").addEventListener(
+    "click",
+    function() {
+        let Name = [];
+        let Rotation = [];
+        let ScaleX = [];
+        let ScaleY = [];
+        let PosX = [];
+        let PosY = [];
+        let Src = [];
+        for (let i = 0; i < ImageGroup.children.length - 1; i++) {
+            Name.push(ImageGroup.children[i].attrs.name);
+            Rotation.push(ImageGroup.children[i].attrs.rotation);
+            ScaleX.push(ImageGroup.children[i].attrs.scaleX);
+            ScaleY.push(ImageGroup.children[i].attrs.scaleY);
+            PosX.push(ImageGroup.children[i].attrs.x);
+            PosY.push(ImageGroup.children[i].attrs.y);
+            Src.push(ImageGroup.children[i].attrs.image.src);
+        }
+        sessionStorage.setItem("Name", Name);
+        sessionStorage.setItem("Rotation", Rotation);
+        sessionStorage.setItem("ScaleX", ScaleX);
+        sessionStorage.setItem("ScaleY", ScaleY);
+        sessionStorage.setItem("PosX", PosX);
+        sessionStorage.setItem("PosY", PosY);
+        sessionStorage.setItem("Src", Src);
+    },
+    false
+);
+document.getElementById("getLocal").addEventListener(
+    "click",
+    function() {
+        let Name = sessionStorage.getItem("Name").split(",");
+        let Rotation = sessionStorage.getItem("Rotation").split(",");
+        let ScaleX = sessionStorage.getItem("ScaleX").split(",");
+        let ScaleY = sessionStorage.getItem("ScaleY").split(",");
+        let PosX = sessionStorage.getItem("PosX").split(",");
+        let PosY = sessionStorage.getItem("PosY").split(",");
+        let Src = sessionStorage.getItem("Src").split(",");
+        Name.forEach(function(el, index) {
+            Konva.Image.fromURL(Src[index], function(image) {
+                image.setAttrs({
+                    x: PosX[index],
+                    y: PosY[index],
+                    scaleX: ScaleX[index],
+                    scaleY: ScaleY[index],
+                    rotation: Rotation[index],
+                    name: Name[index]
+                });
+                ImageGroup.add(image);
+                image.draggable(true);
+                layer.add(ImageGroup);
+
+                layer.draw();
+            });
+        });
+    },
+    false
+);
