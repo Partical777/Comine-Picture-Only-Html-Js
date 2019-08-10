@@ -152,6 +152,7 @@ ImageGroup.on("dragstart", function(evt) {
     attachNew(shape);
     LayerAttachStyle(shape.index);
     layer.draw();
+    console.log(CurrentSelected);
 });
 //=====Event
 
@@ -171,7 +172,7 @@ function attachNew(tar) {
     tr.attachTo(tar);
     layer.draw();
 
-    CurrentSelected = tar;
+    CurrentSelected = tar.index;
 }
 
 // Layer System
