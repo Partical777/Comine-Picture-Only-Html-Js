@@ -121,15 +121,11 @@ stage.on("click tap", function(e) {
     }
     // remove old transformers
     // TODO: we can skip it if current rect is already selected
-    detachAll();
-
-    // create new transformer
-    let tr = new Konva.Transformer(trStyle);
-    ImageGroup.add(tr);
-    tr.attachTo(e.target);
+    attachNew(e.target);
     LayerAttachStyle(e.target.index);
 
     CurrentSelected = e.target.index;
+    console.log(CurrentSelected);
     layer.draw();
 });
 
